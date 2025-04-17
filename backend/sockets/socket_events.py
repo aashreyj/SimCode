@@ -70,7 +70,7 @@ Code editor language change handler
 """
 @sio.event
 async def lang_change(sid, data):
-    room = data.get("roodId")
+    room = data.get("roomId")
     lang = data.get("lang")
     print(f"LANG CHANGE event from {sid} in room {room} for language {lang}")
 

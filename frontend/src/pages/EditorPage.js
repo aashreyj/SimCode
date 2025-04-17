@@ -69,11 +69,19 @@ const EditorPage = () => {
                     });
                 }
             );
+
+            // Listening for language change
+            socketRef.current.on('lang_change',
+                ({lang}) => {
+                    setLang(lang);
+                }
+            );
         };
         init();
         return () => {
             socketRef.current.off(ACTIONS.JOINED);
             socketRef.current.off(ACTIONS.DISCONNECTED);
+            socketRef.current.off(ACTIONS.LANG_CHANGE);
             socketRef.current.disconnect();
         };
     }, []);
@@ -96,6 +104,18 @@ const EditorPage = () => {
             });
         }
         reactNavigator('/');
+    }
+
+    function changeLanguage(el) {
+        setLang(el.target.value);
+        setEditorMode(el.target.mode);
+        if (socketRef.current) {
+            socketRef.current.emit(
+                ACTIONS.LANG_CHANGE, {
+                roomId,
+                lang: el.target.value
+            });
+        }
     }
 
     if (!location.state) {
@@ -126,7 +146,7 @@ const EditorPage = () => {
 
                 <label>
                     Select Language:
-                    <select value={lang} onChange={(e) => {setLang(e.target.value); setEditorMode(e.target.mode)}} className="seLang">
+                    <select value={lang} onChange={changeLanguage} className="seLang">
                         <option value="python" mode="python">Python</option>
                         <option value="cpp" mode="clike">C++</option>
                         <option value="java" mode="clike">Java</option>
