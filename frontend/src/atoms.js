@@ -4,8 +4,13 @@ import {atom} from "recoil";
 const localStorageEffect = key => ({setSelf, onSet}) => {
     const savedValue = localStorage.getItem(key)
     if (savedValue != null) {
-        setSelf(JSON.parse(savedValue));
+        try {
+            setSelf(JSON.parse(savedValue));
+        } catch (e) {
+            console.error("Failed to parse saved value:", e);
+        }
     }
+    
 
     onSet(newValue => {
         //   if (newValue instanceof DefaultValue) {
