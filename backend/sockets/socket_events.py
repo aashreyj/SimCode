@@ -64,6 +64,20 @@ async def sync_code(sid, data):
     if socket_id and code:
         await sio.emit(ACTION_CODE_CHANGE, {"code": code}, to=socket_id)
 
+
+"""
+Code editor language change handler
+"""
+@sio.event
+async def lang_change(sid, data):
+    room = data.get("roodId")
+    lang = data.get("lang")
+    print(f"LANG CHANGE event from {sid} in room {room} for language {lang}")
+
+    if room and lang:
+        await sio.emit(ACTION_LANG_CHANGE, {"lang": lang}, room=room)
+
+
 """
 Client disconnect event handler
 """
