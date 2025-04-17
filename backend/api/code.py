@@ -1,6 +1,7 @@
 import os
 import subprocess
 import uuid
+from typing import Optional
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -39,7 +40,7 @@ LANG_CONFIG_MAP = {
 
 class Code(BaseModel):
     language: str
-    prerequisites: str
+    prerequisites: Optional[str] = ""
     code: str
 
 
