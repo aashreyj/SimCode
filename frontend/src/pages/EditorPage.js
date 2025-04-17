@@ -10,11 +10,17 @@ import {useLocation, useNavigate, Navigate, useParams} from 'react-router-dom';
 
 const EditorPage = () => {
 
+    const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/api/execute`;
+
     const [editorMode, setEditorMode] = useRecoilState(mode)
     const [lang, setLang] = useRecoilState(language);
     const [theme, setTheme] = useRecoilState(cmtheme);
 
     const [clients, setClients] = useState([]);
+
+    const [prerequisites, setPrerequisites] = useState("");
+    const [stdout, setStdout] = useState("");
+    const [stderr, setStderr] = useState("");
 
     const socketRef = useRef(null);
     const codeRef = useRef(null);
@@ -86,6 +92,11 @@ const EditorPage = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (lang === "markdown")
+            document.getElementsByClassName('submitBtn')[0].disabled = true;
+    }, []);
+
     async function copyRoomId() {
         try {
             await navigator.clipboard.writeText(roomId);
@@ -115,6 +126,33 @@ const EditorPage = () => {
                 roomId,
                 lang: el.target.value
             });
+        }
+    }
+
+    const submitCodeHandler = async () => {
+        if (lang === "markdown" || !codeRef.current)
+            return;
+
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    language: lang,
+                    prerequisites,
+                    code: codeRef.current
+                })
+            });
+        
+            if(!response.ok) throw new Error(`Error during code execution: ${response.status}`);
+            const data = await response.json();
+            setStdout(data.stdout);
+            setStderr(data.stderr);
+        } catch (error) {
+            toast.error("Error while trying to execute code");
+            console.log(error);
         }
     }
 
@@ -171,21 +209,45 @@ const EditorPage = () => {
                 </label>
 
                 <button className="btn copyBtn" onClick={copyRoomId}>
-                    Copy ROOM ID
+                    Copy Room ID
                 </button>
                 <button className="btn leaveBtn" onClick={() => {leaveRoom(roomId)}}>
                     Leave
                 </button>
+                <button className="btn submitBtn" onClick={submitCodeHandler}>
+                    Run Code
+                </button>
             </div>
 
-            <div className="editorWrap">
-                <Editor
-                    socketRef={socketRef}
-                    roomId={roomId}
-                    onCodeChange={(code) => {
-                        codeRef.current = code;
-                    }}
-                />
+            <div className="editor-layout">
+                <div className="left-panel">
+                    <textarea
+                        className="prerequisites"
+                        placeholder="Enter code pre-requisites here in Bash"
+                        value={prerequisites}
+                        onChange={(e) => setPrerequisites(e.target.value)}
+                    />
+
+                    <Editor
+                        socketRef={socketRef}
+                        roomId={roomId}
+                        onCodeChange={(code) => {
+                            codeRef.current = code;
+                        }}
+                    />
+                </div>
+
+                <div className="right-panel">
+                    <div className="stdout-box">
+                        <div className="output-label">Stdout:</div>
+                        <pre className="output-text">{stdout}</pre>
+                    </div>
+
+                    <div className="stderr-box">
+                        <div className="output-label">Stderr:</div>
+                            <pre className="output-text">{stderr}</pre>
+                        </div>
+                    </div>
             </div>
         </div>
     );

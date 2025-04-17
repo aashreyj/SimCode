@@ -28,6 +28,7 @@ import 'codemirror/mode/shell/shell';
 import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/edit/closebrackets';
 import 'codemirror/addon/scroll/simplescrollbars.css';
+import '@codemirror/autocomplete'
 
 // search
 import 'codemirror/addon/search/search.js';

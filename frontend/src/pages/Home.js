@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import {Link, useNavigate} from 'react-router-dom';
 
 const Home = () => {
+    const apiUrl = process.env.REACT_APP_BACKEND_URL;
+
     const navigate = useNavigate();
 
     const [roomId, setRoomId] = useState('');
@@ -16,18 +18,31 @@ const Home = () => {
         toast.success('Created a new room');
     };
 
-    const joinRoom = () => {
+    const joinRoom = async () => {
         if (!roomId || !username) {
             toast.error('ROOM ID & username is required');
             return;
         }
 
-        // Redirect
-        navigate(`/editor/${roomId}`, {
-            state: {
-                username,
-            },
-        });
+        try {
+            const response = await fetch(`${apiUrl}/api/room-user-count?roomId=${roomId}`);
+            if (!response.ok) throw new Error(`Error during fetch call: ${response.status}`)
+            const json = await response.json();
+            if (json.member_count < 8) {
+                navigate(`/editor/${roomId}`, {
+                    state: {
+                        username,
+                    },
+                });
+            }
+            else {
+                toast.error("Room is Full!");
+                return;
+            }
+        } catch (error) {
+            toast.error("Error occurred while trying to join the room");
+            console.log(error);
+        }
     };
 
     const handleInputEnter = (e) => {
