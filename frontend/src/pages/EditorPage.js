@@ -8,8 +8,8 @@ import Client from '../components/Client';
 import Editor from '../components/Editor';
 import LanguageSelector from '../components/LanguageSelector';
 import PrerequisitesInput from '../components/PrerequisitesInput';
-import StderrBox from '../components/Stderr';
-import StdoutBox from '../components/Stdout';
+import StderrBox from '../components/StderrBox';
+import StdoutBox from '../components/StdoutBox';
 import ThemeSelector from '../components/ThemeSelector';
 import { initSocket } from '../socket';
 
@@ -17,18 +17,18 @@ const EditorPage = () => {
 
     const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/api/execute`;
 
-    const [editorMode, setEditorMode] = useRecoilState(mode)
+    const [, setEditorMode] = useRecoilState(mode)
     const [lang, setLang] = useRecoilState(language);
     const [theme, setTheme] = useRecoilState(cmtheme);
 
     const [clients, setClients] = useState([]);
 
-    const [prerequisites, setPrerequisites] = useState("");
     const [stdout, setStdout] = useState("");
     const [stderr, setStderr] = useState("");
 
     const socketRef = useRef(null);
     const codeRef = useRef(null);
+    const prereqRef = useRef(null);
     const location = useLocation();
     const {roomId} = useParams();
     const reactNavigator = useNavigate();
@@ -62,6 +62,8 @@ const EditorPage = () => {
                     setClients(clients);
                     socketRef.current.emit(ACTIONS.SYNC_CODE, {
                         code: codeRef.current,
+                        prerequisites: prereqRef.current,
+                        lang,
                         socketId,
                     });
                 }
@@ -82,20 +84,31 @@ const EditorPage = () => {
             );
 
             // Listening for language change
-            socketRef.current.on('lang_change',
+            socketRef.current.on(ACTIONS.LANG_CHANGE,
                 ({lang}) => {
                     setLang(lang);
                 }
             );
+
+            // Listening for code execution
+            socketRef.current.on(ACTIONS.CODE_EXECUTED, 
+                ({stdout, stderr}) => {
+                    setStdout(stdout);
+                    setStderr(stderr);            
+                }
+            );
         };
+
         init();
+        
         return () => {
             socketRef.current.off(ACTIONS.JOINED);
             socketRef.current.off(ACTIONS.DISCONNECTED);
             socketRef.current.off(ACTIONS.LANG_CHANGE);
+            socketRef.current.off(ACTIONS.CODE_EXECUTED);
             socketRef.current.disconnect();
         };
-    }, []);
+    }, [reactNavigator, roomId, setLang]);
 
     async function copyRoomId() {
         try {
@@ -130,8 +143,12 @@ const EditorPage = () => {
     }
 
     const submitCodeHandler = async () => {
-        if (lang === "markdown" || !codeRef.current)
+        if (lang === "markdown" || !codeRef.current) return;
+
+        if (!prereqRef.current && !codeRef.current) {
+            toast.error("Please enter code or pre-requisites");
             return;
+        }
 
         try {
             const response = await fetch(apiUrl, {
@@ -141,7 +158,7 @@ const EditorPage = () => {
                 },
                 body: JSON.stringify({
                     language: lang,
-                    prerequisites,
+                    prerequisites: prereqRef.current,
                     code: codeRef.current
                 })
             });
@@ -150,6 +167,12 @@ const EditorPage = () => {
             const data = await response.json();
             setStdout(data.stdout);
             setStderr(data.stderr);
+
+            socketRef.current.emit(ACTIONS.CODE_EXECUTED, {
+                roomId,
+                stdout: data.stdout,
+                stderr: data.stderr
+            });
         } catch (error) {
             toast.error("Error while trying to execute code");
             console.log(error);
@@ -206,8 +229,11 @@ const EditorPage = () => {
             <div className="editor-layout">
                 <div className="left-panel">
                     <PrerequisitesInput
-                        prerequisites={prerequisites}
-                        setPrerequisites={setPrerequisites}
+                        socketRef={socketRef}
+                        roomId={roomId}
+                        onPrerequisitesChange={(prereq) => {
+                            prereqRef.current = prereq;
+                        }}
                     />
 
                     <Editor

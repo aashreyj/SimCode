@@ -2,6 +2,8 @@ ACTION_JOINED = "joined"
 ACTION_DISCONNECTED = "disconnected"
 ACTION_LANG_CHANGE = "lang_change"
 ACTION_CODE_CHANGE = "code_change"
+ACTION_PREREQ_CHANGE = "prereq_change"
+ACTION_CODE_EXECUTED = "code_executed"
 
 FRONTEND_PORT = 3000
 FRONTEND_URL = f"http://localhost:{FRONTEND_PORT}"
@@ -28,7 +30,7 @@ LANG_CONFIG_MAP = {
         "command": ["node", "user_code.js"],
         "image": "node:18-slim",
     },
-    "shell": {
+    "bash": {
         "file": "user_code.sh",
         "command": ["bash", "user_code.sh"],
         "image": "ubuntu:22.04",
