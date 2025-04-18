@@ -29,6 +29,24 @@ const EditorPage = () => {
     const reactNavigator = useNavigate();
 
     useEffect(() => {
+      const handleBeforeUnload = () => {
+        // Emit a leaveRoom event just before the user closes the window
+        if (socketRef.current) {
+          socketRef.current.emit("leave", {
+            roomId,
+            username: location.state?.username,
+          });
+        }
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }, []);
+
+    useEffect(() => {
         const init = async () => {
             socketRef.current = await initSocket();
             socketRef.current.on('connect_error', (err) => handleErrors(err));
@@ -107,15 +125,41 @@ const EditorPage = () => {
         }
     }
 
-    function leaveRoom(roomId) {
+    async function leaveRoom(roomId) {
         if (socketRef.current) {
-            socketRef.current.emit('leave', {
-                roomId,
-                username: location.state?.username,
-            });
+        socketRef.current.emit("leave", {
+            roomId,
+            username: location.state?.username,
+        });
         }
-        reactNavigator('/');
-    }
+      try {
+        const response = await fetch(
+          `http://localhost:8000/api/sessions/leave/${roomId}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Failed to leave session: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        // Clean up frontend state/localStorage
+        // localStorage.removeItem("syncode-room-id");
+        // localStorage.removeItem("syncode-user-id");
+
+        // Navigate to home or somewhere else
+        reactNavigator("/");
+      } catch (error) {
+        console.error("Error leaving session:", error);
+      }
+    };
+
 
     function changeLanguage(el) {
         setLang(el.target.value);

@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {v4 as uuidV4} from 'uuid';
+import React, { useState} from 'react';
 import toast from 'react-hot-toast';
 import {Link, useNavigate} from 'react-router-dom';
 
@@ -11,37 +10,69 @@ const Home = () => {
     const [roomId, setRoomId] = useState('');
     const [username, setUsername] = useState('');
 
-    const createNewRoom = (e) => {
+    const createNewRoom = async (e) => {
         e.preventDefault();
-        const id = uuidV4();
-        setRoomId(id);
-        toast.success('Created a new room');
+        const data = {
+            document_id: "Untitled",
+            name: "New Session",
+            max_participants: 10,
+            is_public: true,
+            session_timeout: 60
+        };
+
+        try {
+          const response = await fetch(
+            `${process.env.REACT_APP_BACKEND_URL}/api/sessions/`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const result = await response.json();
+          toast.success("Created a new room");
+          setRoomId(result.session_id);
+        } catch (error) {
+          toast.error("Failed to create session");
+          console.error("Fetch error:", error);
+        }
     };
 
     const joinRoom = async () => {
         if (!roomId || !username) {
-            toast.error('ROOM ID & username is required');
+            toast.error('Room ID & Username is required');
             return;
         }
 
         try {
-            const response = await fetch(`${apiUrl}/api/room-user-count?roomId=${roomId}`);
-            if (!response.ok) throw new Error(`Error during fetch call: ${response.status}`)
-            const json = await response.json();
-            if (json.member_count < 8) {
-                navigate(`/editor/${roomId}`, {
-                    state: {
-                        username,
-                    },
-                });
+          const response = await fetch(
+            `${apiUrl}/api/sessions/join?roomId=${roomId}`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ 'user_id':username }),
             }
-            else {
-                toast.error("Room is Full!");
-                return;
-            }
+          );
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            toast.error("Failed to join room");
+            return;
+          }
+
+          const result = await response.json();
+          navigate(`/editor/${roomId}`, {
+            state: { username },
+          });
         } catch (error) {
-            toast.error("Error occurred while trying to join the room");
-            console.log(error);
+          toast.error("Error occurred while trying to join the room");
         }
     };
 
