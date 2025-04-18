@@ -11,8 +11,8 @@
     --join-hover-color: #0096FF;
     --leave-color: #B90000;
     --leave-hover-color: #FF5733;
-    --submit-color: #00AB41;
-    --submit-color-hover: #39E75F;
+    --submit-color: #28A745;
+    --submit-color-hover: #A8D5B9;
 }
 
 body {
@@ -124,6 +124,12 @@ footer a {
     background: var(--submit-color-hover);
     transition: all 0.2s ease-in-out;
     color: var(--copy-text)
+}
+
+.submitBtn:disabled {
+    background-color: #a8d5b9;
+    color: #f1f1f1;
+    cursor: not-allowed;
 }
 
 .createInfo {

@@ -1,12 +1,17 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import Client from '../components/Client';
-import Editor from '../components/Editor'
-import {language, cmtheme, mode} from '../../src/atoms';
-import {useRecoilState} from 'recoil';
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { cmtheme, language, mode } from '../../src/atoms';
 import ACTIONS from '../actions/Actions';
-import {initSocket} from '../socket';
-import {useLocation, useNavigate, Navigate, useParams} from 'react-router-dom';
+import Client from '../components/Client';
+import Editor from '../components/Editor';
+import LanguageSelector from '../components/LanguageSelector';
+import PrerequisitesInput from '../components/PrerequisitesInput';
+import StderrBox from '../components/Stderr';
+import StdoutBox from '../components/Stdout';
+import ThemeSelector from '../components/ThemeSelector';
+import { initSocket } from '../socket';
 
 const EditorPage = () => {
 
@@ -90,11 +95,6 @@ const EditorPage = () => {
             socketRef.current.off(ACTIONS.LANG_CHANGE);
             socketRef.current.disconnect();
         };
-    }, []);
-
-    useEffect(() => {
-        if (lang === "markdown")
-            document.getElementsByClassName('submitBtn')[0].disabled = true;
     }, []);
 
     async function copyRoomId() {
@@ -182,31 +182,15 @@ const EditorPage = () => {
                     </div>
                 </div>
 
-                <label>
-                    Select Language:
-                    <select value={lang} onChange={changeLanguage} className="seLang">
-                        <option value="python" mode="python">Python</option>
-                        <option value="cpp" mode="clike">C++</option>
-                        <option value="java" mode="clike">Java</option>
-                        <option value="javascript" mode="javascript">JavaScript</option>
-                        <option value="bash" mode="shell">Shell</option>
-                        <option value="markdown" mode="markdown">Markdown</option>
-                    </select>
-                </label>
+                <LanguageSelector
+                    lang={lang}
+                    changeLanguage={changeLanguage}
+                />
 
-                <label>
-                    Select Theme:
-                    <select value={theme} onChange={(e) => {setTheme(e.target.value);}} className="seLang">
-                        <option value="cobalt">cobalt</option>
-                        <option value="darcula">darcula</option>
-                        <option value="eclipse">eclipse</option>
-                        <option value="idea">idea</option>
-                        <option value="material">material</option>
-                        <option value="material-ocean">material-ocean</option>
-                        <option value="monokai">monokai</option>
-                        <option value="solarized">solarized</option>
-                    </select>
-                </label>
+                <ThemeSelector
+                    theme={theme}
+                    setTheme={setTheme}
+                />
 
                 <button className="btn copyBtn" onClick={copyRoomId}>
                     Copy Room ID
@@ -214,18 +198,16 @@ const EditorPage = () => {
                 <button className="btn leaveBtn" onClick={() => {leaveRoom(roomId)}}>
                     Leave
                 </button>
-                <button className="btn submitBtn" onClick={submitCodeHandler}>
+                <button className="btn submitBtn" onClick={submitCodeHandler} disabled={lang === "markdown"}>
                     Run Code
                 </button>
             </div>
 
             <div className="editor-layout">
                 <div className="left-panel">
-                    <textarea
-                        className="prerequisites"
-                        placeholder="Enter code pre-requisites here in Bash"
-                        value={prerequisites}
-                        onChange={(e) => setPrerequisites(e.target.value)}
+                    <PrerequisitesInput
+                        prerequisites={prerequisites}
+                        setPrerequisites={setPrerequisites}
                     />
 
                     <Editor
@@ -238,16 +220,9 @@ const EditorPage = () => {
                 </div>
 
                 <div className="right-panel">
-                    <div className="stdout-box">
-                        <div className="output-label">Stdout:</div>
-                        <pre className="output-text">{stdout}</pre>
-                    </div>
-
-                    <div className="stderr-box">
-                        <div className="output-label">Stderr:</div>
-                            <pre className="output-text">{stderr}</pre>
-                        </div>
-                    </div>
+                    <StdoutBox stdout={stdout} />
+                    <StderrBox stderr={stderr} />
+                </div>
             </div>
         </div>
     );

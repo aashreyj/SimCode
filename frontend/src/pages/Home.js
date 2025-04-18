@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {v4 as uuidV4} from 'uuid';
+import React, { useState } from 'react';
 import toast from 'react-hot-toast';
-import {Link, useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { v4 as uuidV4 } from 'uuid';
 
 const Home = () => {
     const apiUrl = process.env.REACT_APP_BACKEND_URL;
