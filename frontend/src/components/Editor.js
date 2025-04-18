@@ -1,6 +1,6 @@
-import React, {useEffect, useRef} from 'react';
-import {cmtheme, mode} from '../../src/atoms';
-import {useRecoilValue} from 'recoil';
+import React, { useEffect, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
+import { cmtheme, mode } from '../../src/atoms';
 import ACTIONS from '../actions/Actions';
 
 // CODE MIRROR
@@ -12,8 +12,8 @@ import 'codemirror/theme/cobalt.css';
 import 'codemirror/theme/darcula.css';
 import 'codemirror/theme/eclipse.css';
 import 'codemirror/theme/idea.css';
-import 'codemirror/theme/material.css';
 import 'codemirror/theme/material-ocean.css';
+import 'codemirror/theme/material.css';
 import 'codemirror/theme/monokai.css';
 import 'codemirror/theme/solarized.css';
 
@@ -25,23 +25,23 @@ import 'codemirror/mode/python/python';
 import 'codemirror/mode/shell/shell';
 
 // features
-import 'codemirror/addon/edit/closetag';
+import '@codemirror/autocomplete';
 import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/edit/closetag';
 import 'codemirror/addon/scroll/simplescrollbars.css';
-import '@codemirror/autocomplete'
 
 // search
+import 'codemirror/addon/dialog/dialog.css';
+import 'codemirror/addon/dialog/dialog.js';
+import 'codemirror/addon/search/jump-to-line.js';
 import 'codemirror/addon/search/search.js';
 import 'codemirror/addon/search/searchcursor.js';
-import 'codemirror/addon/search/jump-to-line.js';
-import 'codemirror/addon/dialog/dialog.js';
-import 'codemirror/addon/dialog/dialog.css';
 
 // autocomplete
+import 'codemirror/addon/hint/anyword-hint';
+import 'codemirror/addon/hint/javascript-hint';
 import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/show-hint.css';
-import 'codemirror/addon/hint/javascript-hint';
-import 'codemirror/addon/hint/anyword-hint';
 
 
 const Editor = ({socketRef, roomId, onCodeChange}) => {
