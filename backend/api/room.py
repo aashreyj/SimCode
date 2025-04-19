@@ -4,7 +4,7 @@ from sockets.socket_events import connected_room_socket_mapping
 
 router = APIRouter()
 
-@router.get("/room-user-count/")
+@router.get("/room-user-count")
 async def return_count(roomId: str = None):
     global connected_room_socket_mapping
 

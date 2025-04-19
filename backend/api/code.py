@@ -54,7 +54,7 @@ async def run_code(code: Code):
     os.makedirs(base_dir, exist_ok=True)
 
     # Write user code to file
-    with open(f"{base_dir}/{LANG_CONFIG_MAP[code.language]["file"]}", "w") as f:
+    with open(f"{base_dir}/{LANG_CONFIG_MAP[code.language]['file']}", "w") as f:
         f.write(code.code)
 
     # Combine setup + run into run_combined.sh
@@ -79,7 +79,7 @@ ulimit -t 2
                 "sudo", "docker", "run", "--rm",
                 "-v", f"{base_dir}:/sandbox",
                 "-w", "/sandbox",
-                f"{LANG_CONFIG_MAP[code.language]["image"]}",
+                f"{LANG_CONFIG_MAP[code.language]['image']}",
                 "./run_combined.sh"
             ],
             capture_output=True,
