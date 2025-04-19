@@ -1,8 +1,12 @@
 import socketio
+from app.api import user_routes
 from app.api.code import router as code_router
 from app.api.room import router as room_router
 from app.constants import FRONTEND_URL
+from app.models.base import Base
+from app.models.user_model import Base
 from app.sockets.socket_manager import sio
+from db import engine
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from db import engine

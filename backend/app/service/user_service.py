@@ -1,12 +1,10 @@
-# services/user_service.py
-
-from fastapi import HTTPException, status
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-
-from app.repositories import user_repo
-from app.auth.security import hash_password, verify_password, is_valid_password
 from app.auth.jwt_handler import create_access_token
+from app.auth.security import hash_password, is_valid_password, verify_password
+from app.repositories import user_repo
+from fastapi import HTTPException, status
+from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.orm import Session
+
 
 def signup_user(db: Session, username: str, email: str, password: str, role: str):
     existing_user = user_repo.get_user_by_username(db, username)

@@ -29,7 +29,8 @@ The platform uses Websockets and has been tested on a Linux machine. The followi
 
 - Python 3.12 or higher
 - Node v18.19.1
-- Docker v28.1.1     
+- Docker v28.1.1
+- PostgreSQL
 
 
 The following steps guide through the setup of the execution environment:
@@ -59,7 +60,21 @@ The following steps guide through the setup of the execution environment:
 
         sudo usermod -aG docker <your_username>
 
-4. Setup `.env` file for the frontend. In this file, add the URL and port where the server is running. This is the configuration used by both React and Websocket. Ensure that the port is same for both.
+4. Ensure that PostgreSQL is running and the intended database has been created.
+
+5. Setup `.env` file for the backend. In this file, add the database-related parameters. Sample `.env` for the backend:
+    ```
+    DB_USER="postgres"
+    DB_PASS=""
+    DB_NAME="testdb"
+    DB_SOCKET="localhost:5432"
+    ```
+
+6. Setup `.env` file for the frontend. In this file, add the URL and port where the server is running. This is the configuration used by both React and Websocket. Ensure that the port is same for both. Sample `.env` file for the frontend:
+    ```
+    REACT_APP_BACKEND_URL="http://localhost:8000"
+    SERVER_PORT=8000
+    ```
 
 ## How to Run
 

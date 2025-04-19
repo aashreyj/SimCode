@@ -1,15 +1,9 @@
-# models/user_repo.py
-
-from sqlalchemy.orm import Session
-from app.models.user_model import User
-from app.models.role_model import Role
 from typing import Optional
 
-
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from app.models.role_model import Role
+from app.models.user_model import User
 from sqlalchemy.orm import Session
-from sqlalchemy import Column, String
+
 
 def get_user_by_username(db: Session, username: str) -> Optional[User]:
     return db.query(User).filter(User.username == username).first()
@@ -40,5 +34,3 @@ def create_default_roles(db: Session):
             print(f"{role_name} role already present in db")
             
     db.commit()
-
-

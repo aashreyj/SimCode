@@ -1,6 +1,7 @@
 import re
-from passlib.context import CryptContext
+
 from fastapi.security import OAuth2PasswordBearer
+from passlib.context import CryptContext
 
 SECRET_KEY = "your-secret-key"
 ALGORITHM = "HS256"
