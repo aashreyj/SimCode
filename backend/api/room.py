@@ -9,7 +9,6 @@ from fastapi.encoders import jsonable_encoder
 from api.dependencies import get_current_user
 from typing import List
 
-
 router = APIRouter(
     prefix="/sessions",
     tags=["sessions"],
