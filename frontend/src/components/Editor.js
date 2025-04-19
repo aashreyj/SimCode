@@ -44,7 +44,7 @@ import 'codemirror/addon/hint/show-hint';
 import 'codemirror/addon/hint/show-hint.css';
 
 
-const Editor = ({socketRef, roomId, onCodeChange}) => {
+const Editor = ({ socketRef, roomId, onCodeChange }) => {
 
     const editorRef = useRef(null);
     const editorMode = useRecoilValue(mode);
@@ -56,7 +56,7 @@ const Editor = ({socketRef, roomId, onCodeChange}) => {
                 editorRef.current = Codemirror.fromTextArea(
                     document.getElementById('realtimeEditor'),
                     {
-                        mode: {name: editorMode},
+                        mode: { name: editorMode },
                         theme: editorTheme,
                         autoCloseTags: true,
                         autoCloseBrackets: true,
@@ -71,7 +71,7 @@ const Editor = ({socketRef, roomId, onCodeChange}) => {
                 );
 
                 editorRef.current.on('change', (instance, changes) => {
-                    const {origin} = changes;
+                    const { origin } = changes;
                     const code = instance.getValue();
                     onCodeChange(code);
                     if (origin !== 'setValue') {
@@ -92,7 +92,7 @@ const Editor = ({socketRef, roomId, onCodeChange}) => {
 
     useEffect(() => {
         if (socketRef.current) {
-            socketRef.current.on(ACTIONS.CODE_CHANGE, ({code}) => {
+            socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
                 if (code !== null) {
                     editorRef.current.setValue(code);
                 }
@@ -110,7 +110,7 @@ const Editor = ({socketRef, roomId, onCodeChange}) => {
             editorRef.current.setOption('theme', editorTheme);
         }
     }, [editorMode, editorTheme]);
-    
+
 
     return (
         <textarea id="realtimeEditor"></textarea>

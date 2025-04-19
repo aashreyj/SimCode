@@ -1,0 +1,84 @@
+/* Signup Page Styling */
+.signupPageWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: #1c1e29;
+    padding: 20px;
+    color: #ffffff;
+}
+
+.signupPageWrapper .formWrapper {
+    background: #282a36;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.signupPageWrapper .mainLabel {
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 24px;
+}
+
+.signupPageWrapper .inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.signupPageWrapper .inputBox {
+    background: #f0f0f0;
+    color: #000;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.signupPageWrapper .inputBox:focus {
+    box-shadow: 0 0 0 2px var(--join-hover-color);
+}
+
+.signupPageWrapper .btn {
+    background: var(--join-color);
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 10px;
+}
+
+.signupPageWrapper .btn:hover {
+    background: var(--join-hover-color);
+}
+
+.signupPageWrapper .createInfo {
+    margin-top: 18px;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.signupPageWrapper .createNewBtn {
+    color: #40be70;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.signupPageWrapper .createNewBtn:hover {
+    color: #4aed88;
+}

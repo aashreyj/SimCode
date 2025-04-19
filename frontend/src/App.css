@@ -192,7 +192,7 @@ footer a:hover {
 .editor-container {
     overflow: hidden;
 }
-  
+
 .left-panel {
     flex: 2;
     display: flex;
@@ -200,7 +200,7 @@ footer a:hover {
     gap: 10px;
     overflow: hidden;
 }
-  
+
 .right-panel {
     flex: 1;
     display: flex;
@@ -209,7 +209,7 @@ footer a:hover {
     overflow: hidden;
     max-width: 600px;
 }
-  
+
 .prerequisites {
     flex: 0 0 20%;
     width: 100%;
@@ -218,8 +218,9 @@ footer a:hover {
     font-family: monospace;
     box-sizing: border-box;
 }
-  
-.stdout-box, .stderr-box {
+
+.stdout-box,
+.stderr-box {
     background: #1e1e1e;
     color: #d4d4d4;
     padding: 10px;
@@ -239,12 +240,12 @@ footer a:hover {
     font-weight: bold;
     margin-bottom: 4px;
 }
-  
+
 .output-text {
     white-space: pre-wrap;
     font-family: monospace;
     font-size: 0.9rem;
-}  
+}
 
 .clientsList {
     display: flex;
@@ -307,4 +308,36 @@ footer a:hover {
         line-height: 1.6;
         padding-top: 20px;
     }
+}
+
+.homePageWrapper {
+    display: flex;
+    flex-direction: column;
+    /* stack logout and form vertically */
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    height: 100vh;
+    position: relative;
+}
+
+.logoutWrapper {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.logoutBtn {
+    padding: 6px 14px;
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.logoutBtn:hover {
+    background-color: #d32f2f;
 }

@@ -51,6 +51,12 @@ const Home = () => {
         }
     };
 
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/');
+    };
+
     return (
         <div className="homePageWrapper">
             <div className="formWrapper">
@@ -90,6 +96,12 @@ const Home = () => {
                             new room
                         </Link>
                     </span>
+                </div>
+                {/* Logout button at bottom-left */}
+                <div className="logoutBtnWrapper">
+                    <button onClick={handleLogout} className="btn logoutBtn">
+                        Logout
+                    </button>
                 </div>
             </div>
         </div>
