@@ -110,3 +110,18 @@ async def leave(sid, data):
 
         # let all other clients in that room know that this particular client has left
         await sio.emit(ACTION_DISCONNECTED, {"socketId": sid, "username": username}, room=room, skip_sid=sid)
+
+@sio.event
+async def document_save(sid, data):
+    room = data.get("roomId")
+    document_id = data.get("documentId")
+    title = data.get("title")
+    
+    print(f"DOCUMENT SAVE event from {sid} in room {room}")
+
+    # Notify all room members about document save
+    if room and document_id:
+        await sio.emit("document_updated", {
+            "documentId": document_id,
+            "title": title
+        }, room=room, skip_sid=sid)
