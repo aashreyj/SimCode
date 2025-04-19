@@ -23,4 +23,4 @@ app.include_router(code_router, prefix="/api")
 app.include_router(room_router, prefix="/api")
 
 # Setup Socket Routes
-socket_app = socketio.ASGIApp(sio, other_asgi_app=app)
+simcode = socketio.ASGIApp(sio, other_asgi_app=app)
