@@ -14,9 +14,9 @@ class Database:
             cls._instance = super(Database, cls).__new__(cls)
             cls._instance.conn = psycopg2.connect(
                 host=os.getenv("DB_HOST", "localhost"),
-                database=os.getenv("DB_NAME", "synccode"),
-                user=os.getenv("DB_USER", "synccode_user"),
-                password=os.getenv("DB_PASSWORD", "mypassword"),
+                database=os.getenv("DB_NAME", "mydb"),
+                user=os.getenv("DB_USER", "postgres"),
+                password=os.getenv("DB_PASSWORD", "jain254p*"),
                 port=os.getenv("DB_PORT", 5432)
             )
             cls._instance.conn.autocommit = False
